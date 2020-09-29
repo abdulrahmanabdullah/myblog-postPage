@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { usePost } from '../hooks';
+import Posts from '../components/Posts';
 
 const CONTAINER = styled.div`
   margin-bottom: 20px;
@@ -19,20 +21,24 @@ const BUTTON = styled.button`
   margin: 5px;
 `;
 export default function Home() {
+  const store = usePost();
   return (
-    <CONTAINER>
-      <Link to='/'>
-        <BUTTON>HOME</BUTTON>
-      </Link>
-      <Link to='/add'>
-        <BUTTON>Add</BUTTON>
-      </Link>
-      <Link to='/update'>
-        <BUTTON>Update</BUTTON>
-      </Link>
-      <Link to='/delete'>
-        <BUTTON>Delete</BUTTON>
-      </Link>
-    </CONTAINER>
+    <>
+      <CONTAINER>
+        <Link to='/'>
+          <BUTTON>HOME</BUTTON>
+        </Link>
+        <Link to='/add'>
+          <BUTTON>Add</BUTTON>
+        </Link>
+        <Link to='/update'>
+          <BUTTON>Update</BUTTON>
+        </Link>
+        <Link to='/delete'>
+          <BUTTON>Delete</BUTTON>
+        </Link>
+      </CONTAINER>
+      <Posts store={store} />
+    </>
   );
 }
