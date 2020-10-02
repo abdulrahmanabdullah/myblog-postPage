@@ -4,13 +4,13 @@ import TextField from '@material-ui/core/TextField';
 import { draftToMarkdown } from 'markdown-draft-js';
 import { EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
 import createImagePlugin from 'draft-js-image-plugin';
-// import { stateToHTML } from 'draft-js-export-html';
-// import { stateToMarkdown } from 'draft-js-export-markdown';
-// import { draftToMarkdown } from 'markdown-draft-js';
 import Editor from 'draft-js-plugins-editor';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { BlockStyleControl, InlineStyleControl } from './EditorHeader';
+import {
+  BlockStyleControl,
+  InlineStyleControl,
+} from '../components/editor/EditorHeader';
 import createAlignmentPlugin from 'draft-js-alignment-plugin';
 import createFocusPlugin from 'draft-js-focus-plugin';
 import createEmojiPlugin from 'draft-js-emoji-plugin';
@@ -19,7 +19,7 @@ import 'draft-js-alignment-plugin/lib/plugin.css';
 import 'draft-js-image-plugin/lib/plugin.css';
 
 //Editor styles
-import './rich-editor.css';
+import '../components/editor/rich-editor.css';
 
 // Plugins
 const alignmentPlugin = createAlignmentPlugin();
@@ -29,23 +29,32 @@ const focusPlugin = createFocusPlugin();
 const emojiPlugin = createEmojiPlugin({
   useNativeArt: true,
 });
+
 const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
 const plugins = [focusPlugin, alignmentPlugin, emojiPlugin, imagePlugin];
 
 // key name in local storage
 const DRAFTCONTENT = 'post';
 const DRAFT_TITLE = 'post_title';
-export default function RichEditor() {
+
+function useRichEditorState() {
   //Editor state
   const [editorState, setEditorState] = useState(() => {
     // IF content save it in local storage fill content with it .
     const content = localStorage.getItem(DRAFTCONTENT);
-    if (content) {
-      return EditorState.createWithContent(convertFromRaw(JSON.parse(content)));
+    if (content.length > 0) {
+      return EditorState.createWithContent(
+        convertFromRaw(JSON.parse(content[0]))
+      );
     } else {
       return EditorState.createEmpty();
     }
   });
+  return { editorState, setEditorState };
+}
+export default function RichEditor({ title, imageCover, content }) {
+  //Editor state
+  const { editorState, setEditorState } = useRichEditorState();
 
   // When content change on editor state, update editorstate
   const onChange = (newState) => {
@@ -101,28 +110,30 @@ export default function RichEditor() {
     });
   };
   //Send content
-  const [title, setTitle] = useState(() => {
-    const postTitle = localStorage.getItem(DRAFT_TITLE);
-    if (postTitle) {
-      return postTitle;
-    }
-    return '';
-  });
+  // const [title, setTitle] = useState(() => {
+  //   const postTitle = localStorage.getItem(DRAFT_TITLE);
+  //   if (postTitle) {
+  //     return postTitle;
+  //   }
+  //   return '';
+  // });
 
   const handleTitle = (event) => {
     localStorage.setItem(DRAFT_TITLE, event.target.value);
-    setTitle(event.target.value);
+    // setTitle(event.target.value);
   };
 
-  const [imageCover, setImageCover] = useState('');
+  // const [imageCover, setImageCover] = useState('');
   function handleImageCover(event) {
-    setImageCover(event.target.value);
+    // setImageCover(event.target.value);
   }
 
   // Save content in local storage .
   const draftHandler = () => {
     const content = convertToRaw(editorState.getCurrentContent());
-    localStorage.setItem(DRAFTCONTENT, JSON.stringify(content, null, 2));
+    const draft = [];
+    draft.push({ content });
+    localStorage.setItem(DRAFTCONTENT, JSON.stringify(draft, null, 2));
   };
   return (
     <>

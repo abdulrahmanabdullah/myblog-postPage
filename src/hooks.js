@@ -6,6 +6,7 @@ export function usePost() {
   React.useEffect(() => {
     (async () => {
       const res = await fetch('https://abdulrahmanblog.herokuapp.com/blogs');
+      // debugger;
       const data = await res.json();
       setStore(data);
     })();
